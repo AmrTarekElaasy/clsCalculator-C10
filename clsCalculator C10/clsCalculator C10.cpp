@@ -10,8 +10,15 @@ using namespace std;
 class clsCalculator
 {
 private:
+    struct _stOperationHistory
+    {
+        string OperationInString="";
+        double ProcessOutput=0;
+
+    };
+    vector <_stOperationHistory> _OperationHistoryVec;
     double _Number=0;
-    vector <string> _OperationHistory;
+    
     enum enOperation{enAdd,enSub,enMul,enDiv};
 
     string DoubleToString(double num, short precision = 9)
@@ -53,8 +60,10 @@ private:
         
         
             LastOperation += DoubleToString(Num2) + " = " + DoubleToString(EndNum);
-        
-        _OperationHistory.push_back(LastOperation);
+            _stOperationHistory OperationHistory;
+            OperationHistory.OperationInString = LastOperation;
+            OperationHistory.ProcessOutput = EndNum;
+        _OperationHistory.push_back(OperationHistory);
     }
 
 public:
@@ -94,7 +103,7 @@ public:
      string LastOperation()
      {
          if(_OperationHistory.size()>0)
-         return _OperationHistory[_OperationHistory.size() - 1];
+         return _OperationHistory[_OperationHistory.size() - 1].OperationInString;
      }
     void PrintLastOperation()
      {
@@ -102,12 +111,17 @@ public:
      }
     string AllOperation()
     {
+        
         string Operations = "";
-        for (string i : _OperationHistory)
+        for (short i = 0; i < _OperationHistory.size(); i++)
         {
-            Operations += i + "\n";
+            Operations += _OperationHistory[i].OperationInString + "\n";
+
         }
-        Operations = Operations.substr(0, Operations.length() - 2);
+        if (Operations.size() > 0)
+        {
+            Operations.pop_back();
+        }
         return Operations;
     }
     void PrintAllOperation()
@@ -119,13 +133,26 @@ public:
     {
         return _Number;
     }
-  
+    void CancelLastOperation()
+    {
+        if (_OperationHistory.size() > 1)
+        {
+            _OperationHistory.pop_back();
+            _Number = _OperationHistory.back().ProcessOutput;
+        }
+        else
+        {
+            Clean();
+        }
+        
+    }
 };
 
 int main()
 {
   
-
+/*
+   //Test
    clsCalculator calc;
    calc.Clean();
    
@@ -133,16 +160,24 @@ int main()
    calc.Mul(10);
    calc.Sub(10.59);
    calc.Div(10.4649);
-   calc.PrintLastOperation();
-   cout << "\n\n";
+   
    calc.Mul(6595.4545);
    calc.Div(0.4545);
    calc.Div(49.964);
-   
+   calc.CancelLastOperation();
    calc.PrintAllOperation();
+   calc.CancelLastOperation();
+   calc.CancelLastOperation();
+   calc.CancelLastOperation();
+   calc.CancelLastOperation();
+   calc.CancelLastOperation();
+   calc.CancelLastOperation();
+   calc.PrintAllOperation();
+   cout << calc.CurrentNumber()<<"\n\n";
    calc.Clean();
    calc.PrintAllOperation();
    cout << calc.CurrentNumber() << endl;
+   */
 
 }
 
